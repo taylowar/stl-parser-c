@@ -7,6 +7,10 @@
 
 #include <raylib.h>
 
+#define FACTOR 100
+#define WIDTH  16*FACTOR
+#define HEIGHT 10*FACTOR
+
 char* pop_argv(int *argc, char ***argv)
 {
     assert(*argc > 0 && "argument stack underflow");
@@ -16,14 +20,26 @@ char* pop_argv(int *argc, char ***argv)
     return result; 
 }
 
-#define FACTOR 100
-#define WIDTH  16*FACTOR
-#define HEIGHT 10*FACTOR
-
-int main(void)
+void make_camera3d(Vector3 position, Camera3D *c3d)
 {
+    c3d->position = position;
+    c3d->target = (Vector3){0, 0, 0};
+    c3d->up = (Vector3){0, 1, 0};
+    c3d->fovy = 45;
+    c3d->projection = CAMERA_PERSPECTIVE;
+}
+
+int main(int argc, char **argv)
+{
+    char *program = pop_argv(&argc, &argv);
+    if (argc == 0) {
+        printf("ERROR: missing stl filepath\n");
+        printf("usage: %s <filepath.stl>\n", program);
+        return 1;
+    }
+    char *stl_filepath = pop_argv(&argc, &argv);
     StaleArray sa = {0};
-    sa_from_file("./effel-tower.stl", &sa);
+    sa_from_file(stl_filepath, &sa);
     FacetArray fa = {0};
     sa_fill_fasects(sa, &fa);
 
@@ -31,17 +47,9 @@ int main(void)
     SetTargetFPS(60);
 
     Camera3D c3d = {0};
-    c3d.position = (Vector3){80, 1, 80};
-    c3d.target = (Vector3){0, 0, 0};
-    c3d.up = (Vector3){0, 1, 0};
-    c3d.fovy = 45;
-    c3d.projection = CAMERA_PERSPECTIVE;
+    make_camera3d((Vector3){80, 0, 80}, &c3d);
 
-    Color c = {0};
-    c.r = 18;
-    c.g = 18;
-    c.b = 18;
-    c.a = 255;
+    Color c = {18,18,18,255};
     while (!WindowShouldClose()) {
         BeginDrawing();
         ClearBackground(c);
