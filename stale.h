@@ -1,7 +1,5 @@
-#include <stdlib.h>
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
+#ifndef STALE_H_
+#define STALE_H_
 
 #define DA_BASE_CAP 256
 #define da_append(da, item)                                                          \
@@ -52,7 +50,7 @@ typedef struct {
 Vector3 sa_raylib_vec3(Stale item);
 void sa_facet_print(Facet fct);
 void sa_fill_fasects(StaleArray sa, FacetArray *fa);
-#endif
+#endif // STALE_RAYLIB 
 
 void sa_from_file(const char *filepath, StaleArray *sa);
 void sa_print(StaleArray sa);
@@ -237,6 +235,8 @@ void sa_fill_fasects(StaleArray sa, FacetArray *fa)
     }
 }
 
-#endif
+#endif // STALE_RAYLIB
 
-#endif
+#endif // STALE_IMPLEMENTATION
+
+#endif // STALE_H_
