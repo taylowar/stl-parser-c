@@ -1,6 +1,11 @@
 #ifndef STALE_H_
 #define STALE_H_
 
+#include <ctype.h>
+#include <stdlib.h>
+#include <string.h>
+#include <math.h>
+
 #define DA_BASE_CAP 256
 #define da_append(da, item)                                                          \
     do {                                                                             \
@@ -205,6 +210,18 @@ void sa_facet_print(Facet fct)
     printf("}\n");
 }
 
+Vector3 rotateX(Vector3 *vec, float theta)
+{
+    float r0[] = {1,0,0};
+    float r1[] = {0, cosf(theta), -sinf(theta)};
+    float r2[] = {0, sinf(theta), cosf(theta)};
+    Vector3 nv = {0};
+    nv.x = vec->x*r0[0]+vec->y*r0[1]+vec->z*r0[2];
+    nv.y = vec->x*r1[0]+vec->y*r1[1]+vec->z*r1[2];
+    nv.z = vec->x*r2[0]+vec->y*r2[1]+vec->z*r2[2];
+    return nv;
+}
+
 void sa_fill_fasects(StaleArray sa, FacetArray *fa)
 {
     size_t idx=0;
@@ -216,17 +233,17 @@ void sa_fill_fasects(StaleArray sa, FacetArray *fa)
                 idx+=1;
                 if (sa.data[idx].kywd == VERTEX) {
                     Vector3 p = sa_raylib_vec3(sa.data[idx]);
-                    fct.p1 = p;
+                    fct.p1 = rotateX(&p, -PI/2);
                 }
                 idx+=1;
                 if (sa.data[idx].kywd == VERTEX) {
                     Vector3 p = sa_raylib_vec3(sa.data[idx]);
-                    fct.p2 = p;
+                    fct.p2=rotateX(&p, -PI/2);
                 }
                 idx+=1;
                 if (sa.data[idx].kywd == VERTEX) {
                     Vector3 p = sa_raylib_vec3(sa.data[idx]);
-                    fct.p3 = p;
+                    fct.p3 = rotateX(&p, -PI/2);
                 }
             }
             da_append(fa, fct);
